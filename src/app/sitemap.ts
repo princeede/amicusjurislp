@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { publications } from "@/lib/publications";
+import { getPublications } from "@/lib/sanity/publications";
 import { domainName, siteNavigation } from "@/lib/site-data";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = `https://${domainName}`;
 
   const pages = siteNavigation.map((item) => ({
@@ -10,9 +10,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
+  const publications = await getPublications();
   const articles = publications.map((publication) => ({
     url: `${baseUrl}/publications/${publication.slug}`,
-    lastModified: publication.publishedAt,
+    lastModified: new Date(publication.publishedAt),
   }));
 
   return [...pages, ...articles];

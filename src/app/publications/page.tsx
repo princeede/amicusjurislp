@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicationCard } from "@/components/publications/publication-card";
 import {
+  documentTypeLabel,
   formatPublicationDate,
-  getFeaturedPublications,
   getPublicationCategories,
-  publications,
 } from "@/lib/publications";
+import { getPublications } from "@/lib/sanity/publications";
 
 export const metadata: Metadata = {
   title: "Publications",
@@ -14,10 +14,11 @@ export const metadata: Metadata = {
     "Explore legal insights, issue briefs, and report-style publications from Amicus Juris LP on governance, policy, regulation, and public-interest matters in Nigeria.",
 };
 
-const featuredPublication = getFeaturedPublications(1)[0];
-const categories = Object.entries(getPublicationCategories());
+export default async function PublicationsPage() {
+  const publications = await getPublications();
+  const featuredPublication = publications.find((publication) => publication.featured);
+  const categories = Object.entries(getPublicationCategories(publications));
 
-export default function PublicationsPage() {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-12 md:px-10 lg:px-12">
       <section className="publication-hero">
@@ -56,15 +57,20 @@ export default function PublicationsPage() {
           <div className="space-y-4">
             <p className="eyebrow">Featured publication</p>
             <div className="publication-meta">
-              <span>{featuredPublication.category}</span>
+              <span>{featuredPublication.category?.title ?? "Uncategorised"}</span>
               <span className="h-1 w-1 rounded-full bg-[var(--accent)]" />
-              <span>{featuredPublication.reportLabel}</span>
+              <span>{documentTypeLabel(featuredPublication.documentType)}</span>
               <span className="h-1 w-1 rounded-full bg-[var(--accent)]" />
               <span>{formatPublicationDate(featuredPublication.publishedAt)}</span>
             </div>
             <h2 className="font-serif text-5xl font-semibold leading-[0.95] text-[var(--foreground)] md:text-6xl">
               {featuredPublication.title}
             </h2>
+            {featuredPublication.matterSubheading ? (
+              <p className="font-serif text-xl italic text-[var(--muted-strong)]">
+                {featuredPublication.matterSubheading}
+              </p>
+            ) : null}
             <p className="max-w-3xl text-lg leading-8 text-[var(--muted)]">
               {featuredPublication.excerpt}
             </p>
@@ -80,7 +86,7 @@ export default function PublicationsPage() {
                 className="button-primary"
                 href={`/publications/${featuredPublication.slug}`}
               >
-                Read the full report
+                Read the full publication
               </Link>
             </div>
           </div>
@@ -88,22 +94,28 @@ export default function PublicationsPage() {
           <div className="grid gap-4 rounded-[1.75rem] border border-[var(--border-soft)] bg-white/74 p-6">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--muted-strong)]">
-                Designed for
+                By
               </p>
               <p className="mt-3 text-base leading-8 text-[var(--muted)]">
-                {featuredPublication.audience}
+                {featuredPublication.author.name}
+              </p>
+              <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted-strong)]">
+                {featuredPublication.author.role}
               </p>
             </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--muted-strong)]">
-                Summary
-              </p>
-              <ul className="publication-list mt-4">
-                {featuredPublication.summaryPoints.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-            </div>
+            {featuredPublication.summaryPoints &&
+            featuredPublication.summaryPoints.length > 0 ? (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--muted-strong)]">
+                  Key Takeaways
+                </p>
+                <ul className="publication-list mt-4">
+                  {featuredPublication.summaryPoints.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
         </section>
       ) : null}

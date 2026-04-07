@@ -7,13 +7,17 @@ import {
   valueProposition,
 } from "@/lib/site-data";
 import {
+  documentTypeLabel,
   formatPublicationDate,
-  getFeaturedPublications,
 } from "@/lib/publications";
+import {
+  getFeaturedPublications,
+  getPublications,
+} from "@/lib/sanity/publications";
 
-const featuredPublications = getFeaturedPublications(2);
-
-export default function Home() {
+export default async function Home() {
+  const allPublications = await getPublications();
+  const featuredPublications = getFeaturedPublications(allPublications, 2);
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-24 px-6 py-10 md:px-10 lg:px-12">
       <section className="hero-shell overflow-hidden rounded-[2rem] border border-white/50 px-6 py-10 shadow-[0_30px_80px_rgba(18,29,33,0.16)] md:px-10 md:py-14">
@@ -185,9 +189,9 @@ export default function Home() {
           {featuredPublications.map((publication) => (
             <article key={publication.slug} className="card">
               <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">
-                <span>{publication.category}</span>
+                <span>{publication.category?.title ?? "Uncategorised"}</span>
                 <span className="h-1 w-1 rounded-full bg-[var(--accent)]" />
-                <span>{publication.reportLabel}</span>
+                <span>{documentTypeLabel(publication.documentType)}</span>
                 <span className="h-1 w-1 rounded-full bg-[var(--accent)]" />
                 <span>{formatPublicationDate(publication.publishedAt)}</span>
               </div>

@@ -47,17 +47,32 @@ For the final live solution, the strongest setup is:
 
 ## Suggested CMS model
 
-Move the publication content in `src/lib/publications.ts` into a CMS with fields like:
+The project now includes a Sanity Studio and a CMS-ready publication schema.
+
+## Sanity setup
+
+1. Copy `.env.example` to `.env.local`
+2. Add your Sanity project ID and dataset
+3. Run `npm run dev`
+4. Run `npm run studio` to open the Sanity Studio
+
+Until those environment variables are added, the publication pages continue using the local fallback data in `src/lib/publications.ts`.
+
+## Publication schema
+
+The Sanity publication model includes fields like:
 
 - title
 - slug
 - category
 - template
+- audience
 - excerpt
 - summary points
 - focus areas
 - structured content blocks
-- SEO title
+- report label
+- featured image
 - SEO description
 - social share message
 - publish date

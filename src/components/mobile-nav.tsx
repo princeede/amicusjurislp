@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { NavLink } from "@/components/nav-link";
 
 type MobileNavProps = {
@@ -10,11 +9,6 @@ type MobileNavProps = {
 
 export function MobileNav({ items }: MobileNavProps) {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (open) {
