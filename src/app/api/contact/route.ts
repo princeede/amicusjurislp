@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
+import { render } from "@react-email/render";
 import { Resend } from "resend";
+import { ContactNotificationEmail } from "@/emails/contact-notification";
+import { ContactConfirmationEmail } from "@/emails/contact-confirmation";
 
 export const runtime = "nodejs";
 
@@ -48,15 +51,6 @@ function validate(payload: ContactPayload): string | null {
   return null;
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 export async function POST(request: Request) {
   const ip = getClientIp(request);
   if (isRateLimited(ip)) {
@@ -93,52 +87,58 @@ export async function POST(request: Request) {
   const resend = new Resend(apiKey);
   const name = payload.name!.trim();
   const email = payload.email!.trim();
-  const phone = payload.phone?.trim() ?? "";
+  const phone = payload.phone?.trim() || undefined;
   const subject = payload.subject!.trim();
   const message = payload.message!.trim();
 
-  const html = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; color: #132027;">
-      <h2 style="font-family: Georgia, serif; color: #132027;">New enquiry from the website</h2>
-      <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-        <tr><td style="padding: 8px 0; color: #6f7c83; width: 110px;"><strong>Name</strong></td><td style="padding: 8px 0;">${escapeHtml(name)}</td></tr>
-        <tr><td style="padding: 8px 0; color: #6f7c83;"><strong>Email</strong></td><td style="padding: 8px 0;"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td></tr>
-        ${phone ? `<tr><td style="padding: 8px 0; color: #6f7c83;"><strong>Phone</strong></td><td style="padding: 8px 0;">${escapeHtml(phone)}</td></tr>` : ""}
-        <tr><td style="padding: 8px 0; color: #6f7c83;"><strong>Subject</strong></td><td style="padding: 8px 0;">${escapeHtml(subject)}</td></tr>
-      </table>
-      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e5e5;">
-        <p style="color: #6f7c83; margin: 0 0 8px;"><strong>Message</strong></p>
-        <p style="white-space: pre-wrap; line-height: 1.7;">${escapeHtml(message)}</p>
-      </div>
-      <p style="margin-top: 32px; font-size: 12px; color: #6f7c83;">Sent from the Amicus Juris LP contact form.</p>
-    </div>
-  `;
-
-  const text = `New enquiry from the website
-
-Name: ${name}
-Email: ${email}
-${phone ? `Phone: ${phone}\n` : ""}Subject: ${subject}
-
-${message}
-`;
+  // Render the branded React Email templates to HTML + plain-text.
+  const [notificationHtml, notificationText, confirmationHtml, confirmationText] =
+    await Promise.all([
+      render(
+        ContactNotificationEmail({ name, email, phone, subject, message }),
+      ),
+      render(
+        ContactNotificationEmail({ name, email, phone, subject, message }),
+        { plainText: true },
+      ),
+      render(ContactConfirmationEmail({ name, subject, message })),
+      render(ContactConfirmationEmail({ name, subject, message }), {
+        plainText: true,
+      }),
+    ]);
 
   try {
-    const result = await resend.emails.send({
+    // Send the firm notification first; this is the email we cannot lose.
+    const notification = await resend.emails.send({
       from: `Amicus Juris Website <${fromEmail}>`,
       to: [toEmail],
       replyTo: email,
       subject: `[Website Enquiry] ${subject}`,
-      html,
-      text,
+      html: notificationHtml,
+      text: notificationText,
     });
 
-    if (result.error) {
-      console.error("Resend error:", result.error);
+    if (notification.error) {
+      console.error("Resend notification error:", notification.error);
       return NextResponse.json(
         { error: "Failed to send message. Please try again later." },
         { status: 502 },
       );
+    }
+
+    // Send the auto-reply confirmation to the enquirer. If this fails we
+    // still consider the submission successful — the firm has the lead.
+    const confirmation = await resend.emails.send({
+      from: `Amicus Juris LP <${fromEmail}>`,
+      to: [email],
+      replyTo: toEmail,
+      subject: "We've received your enquiry — Amicus Juris LP",
+      html: confirmationHtml,
+      text: confirmationText,
+    });
+
+    if (confirmation.error) {
+      console.error("Resend confirmation error:", confirmation.error);
     }
 
     return NextResponse.json({ ok: true });
