@@ -34,6 +34,28 @@ function isValidPublication(entry: Publication | null | undefined): entry is Pub
 }
 
 /**
+ * Coerce null array fields into empty arrays so the rendering layer can
+ * safely iterate. Sanity returns null for unset arrays.
+ */
+function normalizePublication(entry: Publication): Publication {
+  return {
+    ...entry,
+    focusAreas: entry.focusAreas ?? [],
+    summaryPoints: entry.summaryPoints ?? [],
+    sections: entry.sections ?? [],
+    recipients: entry.recipients ?? undefined,
+    author: {
+      ...entry.author,
+      expertise: entry.author?.expertise ?? [],
+    },
+    coAuthors: entry.coAuthors?.map((author) => ({
+      ...author,
+      expertise: author.expertise ?? [],
+    })),
+  };
+}
+
+/**
  * Fetch all publications from Sanity, falling back to the static sample data
  * if Sanity is not configured, unreachable, or returns an empty dataset.
  */
@@ -48,7 +70,7 @@ export async function getPublications(): Promise<Publication[]> {
       {},
       { next: { revalidate: 60, tags: ["publication"] } },
     );
-    const valid = (entries ?? []).filter(isValidPublication);
+    const valid = (entries ?? []).filter(isValidPublication).map(normalizePublication);
     if (!valid.length) return fallbackPublications;
     return sortPublications(valid);
   } catch (error) {
@@ -70,7 +92,7 @@ export async function getPublicationBySlug(
       { slug },
       { next: { revalidate: 60, tags: ["publication", `publication:${slug}`] } },
     );
-    if (isValidPublication(entry)) return entry;
+    if (isValidPublication(entry)) return normalizePublication(entry);
     return getFallbackPublicationBySlug(slug);
   } catch (error) {
     console.error(`Failed to fetch publication '${slug}' from Sanity:`, error);

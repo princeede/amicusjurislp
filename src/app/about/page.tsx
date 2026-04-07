@@ -118,7 +118,7 @@ export default async function AboutPage() {
                   <p className="text-sm leading-7 text-[var(--muted)]">
                     {author.shortBio}
                   </p>
-                  {author.expertise.length > 0 ? (
+                  {author.expertise && author.expertise.length > 0 ? (
                     <div className="mt-auto flex flex-wrap gap-2 pt-2">
                       {author.expertise.slice(0, 3).map((item) => (
                         <span
