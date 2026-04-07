@@ -19,7 +19,9 @@
       "Bash(for f:*)",
       "Bash(do cp:*)",
       "Bash(done)",
-      "Bash(ls /Users/hammid/Projects/amicus-juris/src/app/favicon* /Users/hammid/Projects/amicus-juris/public/favicon* /Users/hammid/Projects/amicus-juris/public/brand/)"
+      "Bash(ls /Users/hammid/Projects/amicus-juris/src/app/favicon* /Users/hammid/Projects/amicus-juris/public/favicon* /Users/hammid/Projects/amicus-juris/public/brand/)",
+      "Bash(ls /Users/hammid/Projects/amicus-juris/.env*)",
+      "Bash(PATH=\"/Users/hammid/.nvm/versions/node/v22.17.1/bin:$PATH\" npm install resend)"
     ]
   }
 }
