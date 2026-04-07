@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Read(//usr/local/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(/usr/local/bin/npm config:*)",
+      "Read(//usr/local/Cellar/**)",
+      "Read(//opt/homebrew/Cellar/**)",
+      "Bash(ls /Users/hammid/.nvm/versions/node/*/bin/node)",
+      "Read(//Users/hammid/.volta/bin/**)",
+      "Read(//Users/hammid/.fnm/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(kill 96414)",
+      "Bash(xargs kill:*)",
+      "Bash(chmod +x /Users/hammid/Projects/amicus-juris/.claude/start-dev.sh)",
+      "Bash(PATH=\"/Users/hammid/.nvm/versions/node/v22.17.1/bin:$PATH\" node node_modules/.bin/next dev --help)",
+      "Bash(PATH=\"/Users/hammid/.nvm/versions/node/v22.17.1/bin:$PATH\" npx next build)",
+      "Bash(for f:*)",
+      "Bash(do cp:*)",
+      "Bash(done)"
+    ]
+  }
+}
