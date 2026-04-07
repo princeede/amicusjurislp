@@ -138,6 +138,10 @@ export type TeamMember = {
   image: string;
   bio: string[];
   expertise: string[];
+  socials: {
+    linkedin?: string;
+    twitter?: string;
+  };
 };
 
 export const teamMembers: TeamMember[] = [
@@ -162,6 +166,10 @@ export const teamMembers: TeamMember[] = [
       "Capital Markets",
       "Real Estate & Infrastructure",
     ],
+    socials: {
+      linkedin: "https://www.linkedin.com/in/olanrewaju-lawal-724529222",
+      twitter: "https://x.com/LanreLawal90",
+    },
   },
   {
     slug: "olaniyonu-yusuph",
@@ -184,6 +192,10 @@ export const teamMembers: TeamMember[] = [
       "Banking & Finance",
       "Probate & Administration of Estates",
     ],
+    socials: {
+      linkedin: "https://www.linkedin.com/",
+      twitter: "https://x.com/",
+    },
   },
   {
     slug: "sulaeman-abiodun-ibrahim",
@@ -206,6 +218,10 @@ export const teamMembers: TeamMember[] = [
       "Debt Recovery & Insolvency",
       "Regulation & Compliance",
     ],
+    socials: {
+      linkedin: "https://www.linkedin.com/",
+      twitter: "https://x.com/",
+    },
   },
   {
     slug: "abubakar-musa-khalifa",
@@ -228,6 +244,10 @@ export const teamMembers: TeamMember[] = [
       "Capital Markets",
       "Real Estate & Infrastructure",
     ],
+    socials: {
+      linkedin: "https://www.linkedin.com/in/abubakar-khalifa-musa",
+      twitter: "https://x.com/Galadima_khalee",
+    },
   },
   {
     slug: "mariam-badmus",
@@ -250,6 +270,10 @@ export const teamMembers: TeamMember[] = [
       "Financial Analysis",
       "Data-Driven Legal Strategy",
     ],
+    socials: {
+      linkedin: "https://www.linkedin.com/",
+      twitter: "https://x.com/",
+    },
   },
 ];
 
