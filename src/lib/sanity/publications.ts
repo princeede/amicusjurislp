@@ -1,13 +1,8 @@
 import type { Publication } from "@/lib/publications";
-import {
-  fallbackPublications,
-  getFallbackPublicationBySlug,
-} from "@/lib/fallback-publications";
 import { sanityClient } from "./client";
 import { isSanityConfigured } from "./env";
 import {
   publicationBySlugQuery,
-  publicationSlugsQuery,
   publicationsQuery,
 } from "./queries";
 
@@ -18,10 +13,10 @@ function sortPublications(entries: Publication[]): Publication[] {
 }
 
 /**
- * Filter out Sanity documents that don't satisfy the new schema contract.
- * This protects the site when the dataset still holds documents from an
- * earlier schema version (e.g. string-typed authors that no longer
- * dereference into full author objects).
+ * Reject Sanity documents that don't satisfy the new schema contract.
+ * Protects the site when the dataset still holds documents from an earlier
+ * schema version (e.g. string-typed authors that no longer dereference
+ * into full author objects).
  */
 function isValidPublication(entry: Publication | null | undefined): entry is Publication {
   if (!entry) return false;
@@ -56,12 +51,12 @@ function normalizePublication(entry: Publication): Publication {
 }
 
 /**
- * Fetch all publications from Sanity, falling back to the static sample data
- * if Sanity is not configured, unreachable, or returns an empty dataset.
+ * Fetch all publications from Sanity. Returns an empty array if Sanity is
+ * not configured, unreachable, or has no valid documents.
  */
 export async function getPublications(): Promise<Publication[]> {
   if (!isSanityConfigured || !sanityClient) {
-    return fallbackPublications;
+    return [];
   }
 
   try {
@@ -71,11 +66,10 @@ export async function getPublications(): Promise<Publication[]> {
       { next: { revalidate: 60, tags: ["publication"] } },
     );
     const valid = (entries ?? []).filter(isValidPublication).map(normalizePublication);
-    if (!valid.length) return fallbackPublications;
     return sortPublications(valid);
   } catch (error) {
     console.error("Failed to fetch publications from Sanity:", error);
-    return fallbackPublications;
+    return [];
   }
 }
 
@@ -83,7 +77,7 @@ export async function getPublicationBySlug(
   slug: string,
 ): Promise<Publication | undefined> {
   if (!isSanityConfigured || !sanityClient) {
-    return getFallbackPublicationBySlug(slug);
+    return undefined;
   }
 
   try {
@@ -93,17 +87,17 @@ export async function getPublicationBySlug(
       { next: { revalidate: 60, tags: ["publication", `publication:${slug}`] } },
     );
     if (isValidPublication(entry)) return normalizePublication(entry);
-    return getFallbackPublicationBySlug(slug);
+    return undefined;
   } catch (error) {
     console.error(`Failed to fetch publication '${slug}' from Sanity:`, error);
-    return getFallbackPublicationBySlug(slug);
+    return undefined;
   }
 }
 
 export async function getPublicationSlugs(): Promise<{ slug: string }[]> {
   // Use the full-publication fetcher so that only schema-valid documents
   // contribute slugs. This prevents generateStaticParams from emitting
-  // paths that would then crash at render time.
+  // paths that would crash at render time.
   const publications = await getPublications();
   return publications.map((publication) => ({ slug: publication.slug }));
 }

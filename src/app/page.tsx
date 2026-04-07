@@ -170,6 +170,7 @@ export default async function Home() {
         </div>
       </section>
 
+      {featuredPublications.length > 0 ? (
       <section className="space-y-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="space-y-3">
@@ -218,6 +219,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
+      ) : null}
     </main>
   );
 }

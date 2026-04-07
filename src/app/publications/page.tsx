@@ -120,27 +120,47 @@ export default async function PublicationsPage() {
         </section>
       ) : null}
 
-      <section className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
-        <div className="space-y-3">
-          <p className="eyebrow">Browse by Category</p>
-          <h2 className="section-title max-w-4xl">
-            Explore publications across governance, policy, and legal analysis.
-          </h2>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {categories.map(([category, count]) => (
-            <span key={category} className="publication-chip">
-              {category} ({count})
-            </span>
-          ))}
-        </div>
-      </section>
+      {publications.length > 0 ? (
+        <>
+          <section className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+            <div className="space-y-3">
+              <p className="eyebrow">Browse by Category</p>
+              <h2 className="section-title max-w-4xl">
+                Explore publications across governance, policy, and legal analysis.
+              </h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {categories.map(([category, count]) => (
+                <span key={category} className="publication-chip">
+                  {category} ({count})
+                </span>
+              ))}
+            </div>
+          </section>
 
-      <section className="grid gap-5">
-        {publications.map((publication) => (
-          <PublicationCard key={publication.slug} publication={publication} />
-        ))}
-      </section>
+          <section className="grid gap-5">
+            {publications.map((publication) => (
+              <PublicationCard key={publication.slug} publication={publication} />
+            ))}
+          </section>
+        </>
+      ) : (
+        <section className="rounded-[2rem] border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-16 text-center md:px-10">
+          <p className="eyebrow">Coming Soon</p>
+          <h2 className="section-title mt-4 max-w-2xl mx-auto">
+            New publications from the firm will appear here shortly.
+          </h2>
+          <p className="mt-4 max-w-xl mx-auto text-base leading-7 text-[var(--muted)]">
+            The firm is preparing its first wave of legal opinions, commentaries,
+            and reports. Check back soon, or get in touch to discuss a matter directly.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <Link className="button-primary" href="/contact">
+              Contact the Firm
+            </Link>
+          </div>
+        </section>
+      )}
 
       <section className="grid gap-6 rounded-[2rem] border border-[var(--border-soft)] bg-[var(--surface)] px-6 py-8 md:grid-cols-[1fr_auto] md:items-center md:px-10">
         <div className="space-y-3">
