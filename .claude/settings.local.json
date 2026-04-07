@@ -18,7 +18,8 @@
       "Bash(PATH=\"/Users/hammid/.nvm/versions/node/v22.17.1/bin:$PATH\" npx next build)",
       "Bash(for f:*)",
       "Bash(do cp:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(ls /Users/hammid/Projects/amicus-juris/src/app/favicon* /Users/hammid/Projects/amicus-juris/public/favicon* /Users/hammid/Projects/amicus-juris/public/brand/)"
     ]
   }
 }
