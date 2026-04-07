@@ -75,38 +75,38 @@ export default function AboutPage() {
             The firm is led by experienced partners with multi-jurisdictional expertise and a record of delivering practical, business-aware legal counsel.
           </p>
         </div>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {teamMembers.map((member) => (
             <article
               key={member.slug}
-              className="card grid gap-5 sm:grid-cols-[auto_1fr]"
+              className="card flex flex-col gap-5 !p-0 overflow-hidden"
             >
-              <div className="relative h-32 w-32 overflow-hidden rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)]">
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--surface)]">
                 <Image
                   src={member.image}
                   alt={`Portrait of ${member.name}`}
                   fill
-                  sizes="128px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover"
                 />
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <h3 className="font-serif text-2xl font-semibold leading-tight text-[var(--foreground)]">
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--foreground)]/85 via-[var(--foreground)]/40 to-transparent p-6">
+                  <h3 className="font-serif text-2xl font-semibold leading-tight text-white">
                     {member.name}
                   </h3>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--accent-soft)]">
                     {member.role}
                   </p>
                 </div>
+              </div>
+              <div className="flex flex-1 flex-col gap-4 px-6 pb-6">
                 <p className="text-sm leading-7 text-[var(--muted)]">
                   {member.bio[0]}
                 </p>
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {member.expertise.slice(0, 4).map((item) => (
+                <div className="mt-auto flex flex-wrap gap-2 pt-2">
+                  {member.expertise.slice(0, 3).map((item) => (
                     <span
                       key={item}
-                      className="rounded-full border border-[var(--border-soft)] bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--muted-strong)]"
+                      className="rounded-full border border-[var(--border-soft)] bg-white/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted-strong)]"
                     >
                       {item}
                     </span>

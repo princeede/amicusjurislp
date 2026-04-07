@@ -145,7 +145,7 @@ export const teamMembers: TeamMember[] = [
     slug: "olanrewaju-sulaiman-lawal",
     name: "Olanrewaju Sulaiman Lawal, Esq.",
     role: "Senior / Managing Partner",
-    image: "/team/olanrewaju-sulaiman-lawal.svg",
+    image: "/team/olanrewaju-sulaiman-lawal.jpg",
     bio: [
       "Mr. Olanrewaju Sulaiman Lawal is a graduate of Ahmadu Bello University, Zaria and the Senior/Managing Partner of Amicus-Juris LP. Widely admired for his dynamism and ability to solve complex issues with good-humoured candour, he is a seasoned legal practitioner with over 7 years of post-call experience.",
       "In Nigeria, Olanrewaju practices as a Barrister and Solicitor, leveraging his comprehensive understanding of the legal landscape. He also serves as a registered foreign lawyer in England and Wales, expanding his international legal expertise.",
@@ -263,14 +263,14 @@ export const contactDetails = {
     "+44 7570 140 531",
   ],
   phone: "+234 810 804 7574",
-  address: "S-05 Smart Bridge Plaza, No. 1 O.P. Fingesi Street, Utako District, Abuja FCT",
+  address: "Suite 15, Augustus Aihkomou Street, Utako, Abuja",
   location: "Nigeria",
   website: domainName,
   coverage: "Advisory and representation across Nigeria, with international legal perspective.",
   offices: [
     {
       name: "Abuja (Head Office)",
-      address: "S-05 Smart Bridge Plaza, No. 1 O.P. Fingesi Street, Utako District, Abuja FCT",
+      address: "Suite 15, Augustus Aihkomou Street, Utako, Abuja",
     },
     {
       name: "Osun State",
